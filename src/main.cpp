@@ -2,6 +2,11 @@
 #include "lemlib/api.hpp"
 bool intake1 = false;
 bool intake2 = false;
+bool pne1 = false;
+bool pne2 = false;
+bool pne3 = false;
+bool intake1_forward = false;  // New variable for forward toggle
+bool intake1_reverse = false;  // New variable for reverse toggle
 
 // declare all motor groups and other motors
 pros::Controller controller(pros::E_CONTROLLER_MASTER); // controller
@@ -9,6 +14,11 @@ pros::MotorGroup left_motor_group({-1, 2, -3}, pros::MotorGearset::blue); // lef
 pros::MotorGroup right_motor_group({4, -5, 6}, pros::MotorGearset::blue); // right motor group
 pros::MotorGroup intake_motor({13}, pros::MotorGearset::blue); // intake motor (flywheels)
 pros::MotorGroup intake_motor2({12}, pros::MotorGearset::green); // intake motor #2 (belt)
+
+// declare all pneumatics
+pros::ADIDigitalOut pneA('H'); // short piston
+pros::ADIDigitalOut pneB('G'); // cat ears (on x button)
+pros::ADIDigitalOut pneC('F'); // long piston
 
 // delcare IMU
 pros::Imu imu(10); 
@@ -107,6 +117,7 @@ void competition_initialize() {}
 
 // auton function for when we are in autonomous mode
 void autonomous() {
+	chassis.setPose(0, 0, 0);
 	// tuning pid
 	chassis.turnToHeading(90, 10000);
 }
@@ -114,6 +125,62 @@ void autonomous() {
 // opcontrol function: when we are manually controlling the bot
 void opcontrol() {
 	while (true) {
+		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
+			autonomous();
+		}
+		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+			intake1_forward = !intake1_forward;  // Toggle forward state
+			intake1_reverse = false;             // Turn off reverse if it's on
+			if (intake1_forward) {
+				intake_motor.move_voltage(12000);
+			} else {
+				intake_motor.move_voltage(0);
+			}
+			pros::delay(200);  // Debounce delay
+		}
+		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+			intake1_reverse = !intake1_reverse;  // Toggle reverse state
+			intake1_forward = false;             // Turn off forward if it's on
+			if (intake1_reverse) {
+				intake_motor.move_voltage(-12000);
+			} else {
+				intake_motor.move_voltage(0);
+			}
+			pros::delay(200);  // Debounce delay
+		}
+		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+			intake2 = !intake2;
+			if (intake2) {
+				intake_motor2.move_voltage(100000);
+			} else {
+				intake_motor2.move_voltage(0);
+			}
+			pros::delay(100);
+		} 
+		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+			intake2 = !intake2;
+			if (intake2) {
+				intake_motor2.move_voltage(-100000);
+			} else {
+				intake_motor2.move_voltage(0);
+			}
+			pros::delay(100);
+		} 
+		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+			pne1 = !pne1;
+			pneA.set_value(pne1);
+		} 
+		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+			pne2 = !pne2;
+			pneB.set_value(pne2);
+		} 
+		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
+			pne3 = !pne3;
+			pneC.set_value(pne3);
+		}
+		pros::delay(100);
+
+		
 		// joystick values
 		int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
 		int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
