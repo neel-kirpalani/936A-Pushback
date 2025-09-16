@@ -18,9 +18,9 @@ VEX Robotics Competition code for team 936A using the PROS framework.
 
 ## Features
 
-- Autonomous routines
-- Driver control
-- LemLib integration for advanced control
+- Autonomous routines (coming soon)
+- Driver Control
+- LemLib integration for Odometry
 
 ## License
 
@@ -28,4 +28,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Team
 
-936A - VEX Robotics Competition Team
+936A - Hong Kong International School VEX Robotics Competition Team
