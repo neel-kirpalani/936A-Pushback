@@ -1,3 +1,4 @@
+// 2025-2026 Pushback
 #include "main.h"
 #include "lemlib/api.hpp"
 bool intake1 = false;
@@ -16,12 +17,12 @@ pros::MotorGroup intake_motor({13}, pros::MotorGearset::blue); // intake motor (
 pros::MotorGroup intake_motor2({12}, pros::MotorGearset::green); // intake motor #2 (belt)
 
 // declare all pneumatics
-pros::ADIDigitalOut pneA('H'); // short piston
-pros::ADIDigitalOut pneB('G'); // cat ears (on x button)
+pros::ADIDigitalOut pneA('A'); // short piston
+pros::ADIDigitalOut pneB('B'); // cat ears (on x button)
 pros::ADIDigitalOut pneC('F'); // long piston
 
 // delcare IMU
-pros::Imu imu(10); 
+pros::Imu imu(11); 
 
 // delcare rotational sensors
 pros::Rotation vertical_rot_wheel(7); // vertical tracking wheel
@@ -35,8 +36,8 @@ lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_rot_wheel, lemlib::O
 // create the drivetrain
 lemlib::Drivetrain drivetrain(&left_motor_group, // left motor group
 	&right_motor_group, // right motor group
-	10, // 10 inch track width
-	lemlib::Omniwheel::NEW_4, // using new 4" omnis
+	11.5, // 11.5 inch track width
+	lemlib::Omniwheel::NEW_325, // using new 3.25" omnis
 	360, // drivetrain rpm is 360
 	2 // horizontal drift is 2 (for now)
 );
@@ -62,7 +63,7 @@ lemlib::ControllerSettings lateral_controller(10, // proportional gain (kP)
 );
 
 // angular PID controller
-lemlib::ControllerSettings angular_controller(2, // proportional gain (kP)
+lemlib::ControllerSettings angular_controller(1.5, // proportional gain (kP)
                                               0, // integral gain (kI)
                                               10, // derivative gain (kD)
                                               0, // anti windup
@@ -104,7 +105,7 @@ void initialize() {
             pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
             pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
             
-            pros::delay(20);
+            pros::delay(50);
         }
     });
 }
@@ -126,7 +127,9 @@ void autonomous() {
 void opcontrol() {
 	while (true) {
 		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-			autonomous();
+			chassis.setPose(0, 0, 0);
+			// tuning pid
+			chassis.turnToHeading(90, 10000);
 		}
 		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
 			intake1_forward = !intake1_forward;  // Toggle forward state
