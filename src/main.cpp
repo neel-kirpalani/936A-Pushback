@@ -157,7 +157,6 @@ void autonomous() {
 	
 	pne1 = !pne1;
 	pneA.set_value(pne1);
-
 	pne2 = !pne2;
 	pneB.set_value(pne2);
 
@@ -165,6 +164,12 @@ void autonomous() {
 	
 	chassis.moveToPoint(-66.265, 119.961, 4000);
 	pros::delay(2000);
+	intake_motor2.move_voltage(7500);
+	pros::delay(3000);
+	intake_motor2.move_voltage(-7500);
+	pros::delay(500);
+	intake_motor2.move_voltage(0);
+	pros::delay(200);
 }
 
 // opcontrol function: when we are manually controlling the bot
