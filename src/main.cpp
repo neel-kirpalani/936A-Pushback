@@ -118,9 +118,53 @@ void competition_initialize() {}
 
 // auton function for when we are in autonomous mode
 void autonomous() {
-	chassis.setPose(0, 0, 0);
-	// tuning pid
-	chassis.turnToHeading(90, 10000);
+	chassis.setPose(-136.887, 21.484, 64.5);
+	intake_motor.move_voltage(12000);
+	chassis.moveToPoint(-58.5, 58.79, 4000);
+	pros::delay(4000);
+	chassis.turnToHeading(136.1, 3000);
+	pros::delay(2000);
+	chassis.moveToPoint(-26.855, 27.29, 3000);
+	pros::delay(2000);
+	intake_motor.move_voltage(0);
+	pros::delay(1000);
+	intake_motor.move_voltage(-12000);
+	pros::delay(3000);
+	chassis.moveToPoint(-40.065, 40.645, 4000, {.forwards = false});
+	pros::delay(2000);
+	intake_motor.move_voltage(0);
+	chassis.turnToHeading(33.5, 3000);
+	chassis.moveToPoint(-8.71, 88.113, 4000);
+	pros::delay(2000);
+	chassis.turnToHeading(0, 3000);
+	pros::delay(2000);
+	intake_motor.move_voltage(12000);
+	chassis.moveToPoint(-8.274, 110.613, 3000);
+	pros::delay(2000);
+	chassis.moveToPoint(-8.71, 88.113, 3000, {.forwards = false});
+	pros::delay(2000);
+	intake_motor.move_voltage(0);
+	chassis.turnToHeading(270, 3000);
+	pros::delay(2000);
+	chassis.moveToPoint(-103.477, 88.113, 4000);
+	pros::delay(2000);
+	chassis.turnToHeading(0, 3000);
+	pros::delay(2000);
+	chassis.moveToPoint(-103.477, 119.961, 4000);
+	pros::delay(2000);
+	chassis.turnToHeading(90, 3000);
+	pros::delay(2000);
+	
+	pne1 = !pne1;
+	pneA.set_value(pne1);
+
+	pne2 = !pne2;
+	pneB.set_value(pne2);
+
+	pros::delay(500);
+	
+	chassis.moveToPoint(-66.265, 119.961, 4000);
+	pros::delay(2000);
 }
 
 // opcontrol function: when we are manually controlling the bot
@@ -177,10 +221,6 @@ void opcontrol() {
 			pne2 = !pne2;
 			pneB.set_value(pne2);
 		} 
-		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
-			pne3 = !pne3;
-			pneC.set_value(pne3);
-		}
 		pros::delay(100);
 
 		
