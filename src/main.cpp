@@ -154,7 +154,7 @@ void opcontrol() {
 		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
 			intake2 = !intake2;
 			if (intake2) {
-				intake_motor2.move_voltage(100000);
+				intake_motor2.move_voltage(7500);
 			} else {
 				intake_motor2.move_voltage(0);
 			}
@@ -163,7 +163,7 @@ void opcontrol() {
 		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
 			intake2 = !intake2;
 			if (intake2) {
-				intake_motor2.move_voltage(-100000);
+				intake_motor2.move_voltage(-7500);
 			} else {
 				intake_motor2.move_voltage(0);
 			}
