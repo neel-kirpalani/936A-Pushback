@@ -14,7 +14,7 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER); // controller
 pros::MotorGroup left_motor_group({-1, 2, -3}, pros::MotorGearset::blue); // left motor group
 pros::MotorGroup right_motor_group({4, -5, 6}, pros::MotorGearset::blue); // right motor group
 pros::MotorGroup intake_motor({13}, pros::MotorGearset::blue); // intake motor (flywheels)
-pros::MotorGroup intake_motor2({12}, pros::MotorGearset::green); // intake motor #2 (belt)
+pros::MotorGroup intake_motor2({12}, pros::MotorGearset::blue); // intake motor #2 (belt)
 
 // declare all pneumatics
 pros::ADIDigitalOut pneA('A'); // short piston
