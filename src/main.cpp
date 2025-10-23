@@ -184,7 +184,24 @@ void autonomous() {
     }
     else if (selected_auton == 2) {
         // RIGHT RED AUTON
-        // ...Your code here
+        chassis.setPose(-47.497, -4.821, 90); // initial set pos
+        chassis.moveToPoint(-31.32,-4.821,3000,{.maxSpeed=50}, false); // move to 1st point
+        pros::delay(1500);
+        chassis.turnToHeading(152.3, 1500); // turn to face 2nd point
+        intake_motor.move_voltage(10000); // run intake flywheels
+        pros::delay(500);
+        chassis.moveToPoint(-22.118, -22.349, 3000, {.maxSpeed=30}, false); // move to 2nd point
+        pros::delay(1500);
+        chassis.turnToHeading(44.8, 1500); // turn to face 3rd point
+        pros::delay(500);
+        chassis.moveToPoint(-14.686, -14.866, 2000, {.maxSpeed = 30}, false); // move to 3rd point
+        pros::delay(500);
+        intake_motor.move_voltage(-10000); // start outaking (flywheels)
+        pros::delay(2000);
+        chassis.moveToPoint(-22.118, -22.349, 2000, {.maxSpeed= 30, .forwards=false}); // move to 4th point (moving backwards)
+        pros::delay(500);
+        
+
     }
     else if (selected_auton == 3) {
         // LEFT BLUE AUTON
