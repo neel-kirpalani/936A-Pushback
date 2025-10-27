@@ -39,11 +39,11 @@ lemlib::Drivetrain drivetrain(&left_motor_group, &right_motor_group, 11.5, lemli
 lemlib::OdomSensors sensors(nullptr, nullptr, nullptr, nullptr, &imu);
 
 
-lemlib::ControllerSettings lateral_controller(10, 0, 3, 3, 1, 100, 3, 500, 20);
+lemlib::ControllerSettings lateral_controller(15, 0, 6, 0, 0, 0, 0, 0, 0);
 
 
 
-lemlib::ControllerSettings angular_controller(1.5, 0, 10, 0, 0, 0, 0, 0, 0);
+lemlib::ControllerSettings angular_controller(3.2, 0, 17, 0, 0, 0, 0, 0, 0);
 
 lemlib::Chassis chassis(drivetrain, lateral_controller, angular_controller, sensors);
 
@@ -259,7 +259,8 @@ void autonomous() {
     }
     else if (selected_auton == 3) {
         // LEFT BLUE AUTON
-        // ...Your code here
+        chassis.setPose(0,0,0);
+        chassis.turnToHeading(180, 10000);
     }
     else if (selected_auton == 4) {
         // RIGHT BLUE AUTON
@@ -275,8 +276,63 @@ void autonomous() {
 void opcontrol() {
     while (true) {
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-            chassis.setPose(0, 0, 0);
-            chassis.turnToHeading(90, 10000);
+            // LEFT RED AUTON
+            chassis.setPose(-46.392, 9.509, 90); // initial set pos
+            intake_motor.move_voltage(12000); // start the intake (flywheels)
+            chassis.moveToPoint(-31.197, 9.509, 1500, {.maxSpeed=35}, false); // 1st point
+            pros::delay(500); 
+            chassis.turnToHeading(31.2, 2000, {}, false); // turn to face 2nd point
+            pros::delay(500);
+            chassis.moveToPoint(-23.031, 23.146, 1200, {.maxSpeed=80}, false); // 2nd point
+            pros::delay(500); // delay to intake the blocks
+            chassis.turnToHeading(136.1, 3000); // turn to face 3rd point
+            pros::delay(300);
+            chassis.moveToPoint(-13.984, 13.745, 3000, {.maxSpeed = 50}); // 3rd point
+            pros::delay(1000);
+            intake_motor.move_voltage(-12000); // outtake blocks
+            pros::delay(1200);
+            chassis.moveToPoint(-15.774, 16.002, 4000, {.forwards = false, .maxSpeed = 40}); // move backwards to 4th point
+            pros::delay(1000);
+            intake_motor.move_voltage(0); // stop the intake
+            chassis.turnToHeading(34.7, 2000); // turn to 5th point
+            chassis.moveToPoint(-3.429, 34.69, 3000, {.maxSpeed = 80}); // move to 5th point
+            pros::delay(1000);
+            chassis.turnToHeading(0, 3000); // turn to 6th point
+            pros::delay(500);
+            intake_motor.move_voltage(12000); // start the intake
+            chassis.moveToPoint(-3.257, 43.548, 2000, {.maxSpeed = 50}, false); // move to 6th point
+            pros::delay(1300);
+            chassis.moveToPoint(-3.429, 34.69, 2000, {.forwards = false, .maxSpeed = 50}, false); // move backwards to 7th point
+            pros::delay(500);
+            intake_motor.move_voltage(0); // stop the intake
+            chassis.turnToHeading(270, 3000); // turn to face the 8th point
+            pros::delay(2000);
+            chassis.moveToPoint(-40.739, 34.69, 3000, {.maxSpeed=80}, false); // move to the 8th point
+            pros::delay(1000);
+            chassis.turnToHeading(0, 3000); // turn to face 9th point
+            pros::delay(2000);
+            chassis.moveToPoint(-40.739, 47.229, 2000, {.maxSpeed = 40}, false); // move to 9th point
+            pros::delay(2000);
+            chassis.turnToHeading(90, 1500, {}, false); // turn to face the 10th point
+            pros::delay(500);
+            intake_motor.move_voltage(10000); // start intake to push blocks up to allow the barrel to lift up (flywheels)
+            // activate both pistons to lift up barrel
+            pne1 = !pne1; 
+            pneA.set_value(pne1);
+            pne2 = !pne2;
+            pneB.set_value(pne2);
+
+            pros::delay(1000);
+            intake_motor.move_voltage(0); // stop the flywheels
+        
+            chassis.moveToPoint(-26.089, 47.229, 3000, {.maxSpeed = 20}, false); // move to the 10th point
+            pros::delay(1000);
+            intake_motor2.move_voltage(10000); // push blocks out into goal
+            pros::delay(3000); // 3 seconds to push all the blocks out
+            intake_motor2.move_voltage(-10000); // bring chain back to initial position
+            pros::delay(500);
+            intake_motor2.move_voltage(0); // stop intake motor (chain)
+            pros::delay(200);
         }
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_B)){
             // put code in here for button B
