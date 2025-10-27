@@ -145,13 +145,13 @@ void autonomous() {
         intake_motor.move_voltage(12000); // start the intake (flywheels)
         chassis.moveToPoint(-31.197, 9.509, 1500, {.maxSpeed=35}, false); // 1st point
         pros::delay(500); 
-        chassis.turnToHeading(31.2, 2000, {}, false); // turn to face 2nd point
+        chassis.turnToHeading(32, 2000, {}, false); // turn to face 2nd point
         pros::delay(500);
-        chassis.moveToPoint(-23.031, 23.146, 1200, {.maxSpeed=80}, false); // 2nd point
+        chassis.moveToPoint(-22.82, 22.388, 1200, {.maxSpeed=80}, false); // 2nd point
         pros::delay(500); // delay to intake the blocks
-        chassis.turnToHeading(136.1, 3000); // turn to face 3rd point
+        chassis.turnToHeading(134, 1500); // turn to face 3rd point
         pros::delay(300);
-        chassis.moveToPoint(-13.984, 13.745, 3000, {.maxSpeed = 50}); // 3rd point
+        chassis.moveToPoint(-14.165, 14.417, 3000, {.maxSpeed = 50}); // 3rd point
         pros::delay(1000);
         intake_motor.move_voltage(-12000); // outtake blocks
         pros::delay(1200);
