@@ -159,25 +159,25 @@ void autonomous() {
         pros::delay(1000);
         intake_motor.move_voltage(0); // stop the intake
         chassis.turnToHeading(34.7, 2000); // turn to 5th point
-        chassis.moveToPoint(-3.429, 34.69, 3000, {.maxSpeed = 80}); // move to 5th point
+        chassis.moveToPoint(-3.429, 34.69, 2000, {.maxSpeed = 80}); // move to 5th point
         pros::delay(1000);
         chassis.turnToHeading(0, 3000); // turn to 6th point
         pros::delay(500);
         intake_motor.move_voltage(12000); // start the intake
-        chassis.moveToPoint(-3.257, 43.548, 2000, {.maxSpeed = 50}, false); // move to 6th point
+        chassis.moveToPoint(-3.429, 43.548, 2000, {.maxSpeed = 60}, false); // move to 6th point
         pros::delay(1300);
         chassis.moveToPoint(-3.429, 34.69, 2000, {.forwards = false, .maxSpeed = 50}, false); // move backwards to 7th point
         pros::delay(500);
         intake_motor.move_voltage(0); // stop the intake
         chassis.turnToHeading(270, 3000); // turn to face the 8th point
-        pros::delay(2000);
-        chassis.moveToPoint(-40.739, 34.69, 3000, {.maxSpeed=80}, false); // move to the 8th point
-        pros::delay(1000);
+        pros::delay(500);
+        chassis.moveToPoint(-40.739, 34.69, 2000, {.maxSpeed=80}, false); // move to the 8th point
+        pros::delay(500);
         chassis.turnToHeading(0, 3000); // turn to face 9th point
         pros::delay(2000);
         chassis.moveToPoint(-40.739, 47.229, 2000, {.maxSpeed = 40}, false); // move to 9th point
         pros::delay(2000);
-        chassis.turnToHeading(90, 1500, {}, false); // turn to face the 10th point
+        chassis.turnToHeading(90, 1000, {}, false); // turn to face the 10th point
         pros::delay(500);
         intake_motor.move_voltage(10000); // start intake to push blocks up to allow the barrel to lift up (flywheels)
         // activate both pistons to lift up barrel
@@ -189,7 +189,7 @@ void autonomous() {
         pros::delay(1000);
         intake_motor.move_voltage(0); // stop the flywheels
     
-        chassis.moveToPoint(-26.089, 47.229, 3000, {.maxSpeed = 20}, false); // move to the 10th point
+        chassis.moveToPoint(-31.197, 47.229, 2000, {.maxSpeed = 20}, false); // move to the 10th point
         pros::delay(1000);
         intake_motor2.move_voltage(10000); // push blocks out into goal
         pros::delay(3000); // 3 seconds to push all the blocks out
