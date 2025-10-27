@@ -28,16 +28,21 @@ pros::ADIDigitalOut pneC('F');
 
 pros::Imu imu(11);
 
-pros::Rotation vertical_rot_wheel(7);
-pros::Rotation horizontal_rot_wheel(8);
+//pros::Rotation vertical_rot_wheel(7);
+//pros::Rotation horizontal_rot_wheel(8);
 
-lemlib::TrackingWheel vertical_tracking_wheel(&vertical_rot_wheel, lemlib::Omniwheel::NEW_275, -2.5);
-lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_rot_wheel, lemlib::Omniwheel::NEW_275, -5.75);
+//lemlib::TrackingWheel vertical_tracking_wheel(&vertical_rot_wheel, lemlib::Omniwheel::NEW_275, -2.5);
+//lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_rot_wheel, lemlib::Omniwheel::NEW_275, -5.75);
 
-lemlib::Drivetrain drivetrain(&left_motor_group, &right_motor_group, 11.5, lemlib::Omniwheel::NEW_325, 360, 2);
-lemlib::OdomSensors sensors(&vertical_tracking_wheel, nullptr, &horizontal_tracking_wheel, nullptr, &imu);
+lemlib::Drivetrain drivetrain(&left_motor_group, &right_motor_group, 11.5, lemlib::Omniwheel::NEW_325, 400, 2);
+//lemlib::OdomSensors sensors(&vertical_tracking_wheel, nullptr, &horizontal_tracking_wheel, nullptr, &imu);
+lemlib::OdomSensors sensors(nullptr, nullptr, nullptr, nullptr, &imu);
+
 
 lemlib::ControllerSettings lateral_controller(10, 0, 3, 3, 1, 100, 3, 500, 20);
+
+
+
 lemlib::ControllerSettings angular_controller(1.5, 0, 10, 0, 0, 0, 0, 0, 0);
 
 lemlib::Chassis chassis(drivetrain, lateral_controller, angular_controller, sensors);
@@ -114,7 +119,9 @@ void initialize() {
 }
 
 // ===== DISABLED FUNCTION =====
-void disabled() {}
+void disabled() {
+    // this code runs when the bot is connected to field control and is disabled
+}
 
 // ===== COMPETITION INITIALIZE =====
 void competition_initialize() {
@@ -125,7 +132,8 @@ void competition_initialize() {
 // ===== AUTONOMOUS FUNCTION =====
 void autonomous() {
     if (selected_auton == 1) {
-        chassis.setPose(-47.497, 9.509, 90); // initial set pos
+        // LEFT RED AUTON
+        chassis.setPose(-46.392, 9.509, 90); // initial set pos
 		intake_motor.move_voltage(12000); // start the intake (flywheels)
 		chassis.moveToPoint(-31.197, 9.509, 2000, {.maxSpeed=35}, false); // 1st point
 		pros::delay(2000); 
@@ -198,10 +206,48 @@ void autonomous() {
         pros::delay(500);
         intake_motor.move_voltage(-10000); // start outaking (flywheels)
         pros::delay(2000);
-        chassis.moveToPoint(-22.118, -22.349, 2000, {.maxSpeed= 30, .forwards=false}); // move to 4th point (moving backwards)
+        chassis.moveToPoint(-22.118, -22.349, 2000, {.forwards=false,.maxSpeed= 30}); // move to 4th point (moving backwards)
+        pros::delay(500);
+        intake_motor.move_voltage(0); // stop intake (flywheels)
+        chassis.turnToHeading(135, 1500); // turn to face 5th point
+        pros::delay(500);
+        chassis.moveToPoint(-4.393, -32.27, 1500); // move to 5th point
+        pros::delay(500);
+        chassis.turnToHeading(180, 1500); // turn to face 6th point
+        intake_motor.move_voltage(10000);
+        pros::delay(500);
+        chassis.moveToPoint(-4.393, -40.793, 2000, {.maxSpeed=45}); // move to 6th point
+        pros::delay(1500);
+        chassis.moveToPoint(-4.393, -32.27, 1000); // move to 7th point (move backwards)
+        pros::delay(500);
+        chassis.turnToHeading(270, 1000); // turn to 8th point
+        intake_motor.move_voltage(0);
+        pros::delay(500);
+        chassis.moveToPoint(-36.442, -32.27, 2000, {.maxSpeed=80}, false); // move to 8th point
+        pros::delay(500);
+        chassis.turnToHeading(180, 1000); // turn to face 9th point
+        pros::delay(500);
+        chassis.moveToPoint(-36.442, -47.482, 1000, {.maxSpeed=50}); // move to 9th point
+        pros::delay(500);
+        chassis.turnToHeading(90, 1000); // turn to face goal (10th point)
         pros::delay(500);
         
+        // lift up barrel
+        pne1 = !pne1; 
+		pneA.set_value(pne1);
+		pne2 = !pne2;
+		pneB.set_value(pne2);
 
+        pros::delay(1500);
+        chassis.moveToPoint(-31.32, -47.482, 1000, {.maxSpeed=20});
+        pros::delay(500);
+        intake_motor2.move_voltage(10000); // start pushing blocks out of barrel
+        pros::delay(1500);
+        intake_motor2.move_voltage(-10000); // move chain back to initial pos
+        pros::delay(500);
+        intake_motor2.move_voltage(0);
+        pros::delay(200);
+        
     }
     else if (selected_auton == 3) {
         // LEFT BLUE AUTON
@@ -223,6 +269,9 @@ void opcontrol() {
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
             chassis.setPose(0, 0, 0);
             chassis.turnToHeading(90, 10000);
+        }
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_B)){
+            // put code in here for button B
         }
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
             intake1_forward = !intake1_forward;
@@ -247,7 +296,7 @@ void opcontrol() {
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
             intake2 = !intake2;
             if (intake2) {
-                intake_motor2.move_voltage(10000);
+                intake_motor2.move_voltage(8000);
             } else {
                 intake_motor2.move_voltage(0);
             }
@@ -256,7 +305,7 @@ void opcontrol() {
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
             intake2 = !intake2;
             if (intake2) {
-                intake_motor2.move_voltage(-10000);
+                intake_motor2.move_voltage(-8000);
             } else {
                 intake_motor2.move_voltage(0);
             }
