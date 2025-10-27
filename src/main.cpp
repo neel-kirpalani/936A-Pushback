@@ -121,6 +121,14 @@ void initialize() {
 // ===== DISABLED FUNCTION =====
 void disabled() {
     // this code runs when the bot is connected to field control and is disabled
+    // Test autonomous
+    if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
+        autonomous();
+    }
+    // Test opcontrol
+    if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
+        opcontrol();
+    }
 }
 
 // ===== COMPETITION INITIALIZE =====
